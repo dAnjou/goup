@@ -15,7 +15,7 @@ type context struct {
 var (
 	default_template = `
 <!DOCTYPE html>
-<title>upload</title>
+<title>goup</title>
 <meta charset='utf-8'>
 <style type="text/css">
 table {

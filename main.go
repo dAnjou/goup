@@ -147,4 +147,5 @@ func main() {
 	http.HandleFunc("/", index)
 
 	log.Fatal(http.ListenAndServe(*address, nil))
+	return
 }
