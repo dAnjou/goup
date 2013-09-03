@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/http/fcgi"
 	"os"
 	"path"
 	"sort"
@@ -143,6 +144,7 @@ func main() {
 		fmt.Fprintln(os.Stderr, "\nEnvironment variables (get overridden by command line arguments):")
 		fmt.Fprintln(os.Stderr, "  GOUP_UPLOAD=false: disable uploads")
 		fmt.Fprintln(os.Stderr, "  GOUP_DIR=<path>: see -dir")
+		fmt.Fprintln(os.Stderr, "  GOUP_MODE=(http|fcgi): see -mode")
 	}
 	if os.Getenv("GOUP_UPLOAD") == "false" {
 		noupload = true
@@ -150,7 +152,12 @@ func main() {
 	if d := os.Getenv("GOUP_DIR"); d != "" {
 		dir = d
 	}
+	mode := "http"
+	if m := os.Getenv("GOUP_MODE"); m != "" {
+		mode = m
+	}
 
+	flag.StringVar(&mode, "mode", mode, "run either standalone (http) or as FCGI application (fcgi)")
 	verbose := flag.Bool("v", true, "verbose output (no output at all by default)")
 	address := flag.String("addr", "0.0.0.0:4000", "listen on this address")
 	flag.BoolVar(&noupload, "noupload", noupload, "enable or disable uploads")
@@ -167,5 +174,12 @@ func main() {
 
 	http.HandleFunc("/", index)
 
-	log.Fatal(http.ListenAndServe(*address, nil))
+	switch mode {
+	case "http":
+		log.Fatal(http.ListenAndServe(*address, nil))
+	case "fcgi":
+		log.Fatal(fcgi.Serve(nil, nil))
+	default:
+		log.Fatalf("Unknown mode '%s'!", mode)
+	}
 }
