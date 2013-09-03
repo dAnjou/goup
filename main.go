@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -51,18 +52,16 @@ func readDir(dirname string, sortby string, reverse bool) ([]os.FileInfo, error)
 }
 
 var (
-	verbose  = flag.Bool("v", false, "verbose output (no output at all by default)")
-	noupload = flag.Bool("noupload", false, "disable uploads")
-	address  = flag.String("addr", "0.0.0.0:4000", "listen on this address")
-	dir      = flag.String("dir", ".", "directory for storing and serving files")
+	noupload bool   = false
+	dir      string = "."
 )
 
 func index(w http.ResponseWriter, r *http.Request) {
 	url_path := path.Clean(r.URL.Path)
-	local_path := path.Join(*dir, url_path)
+	local_path := path.Join(dir, url_path)
 	switch r.Method {
 	case "POST":
-		if *noupload {
+		if noupload {
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}
 		body, err := r.MultipartReader()
@@ -114,7 +113,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 				http.Error(w, err.Error(), 500)
 				return
 			}
-			ctx := context{url_path == "/", !*noupload, entries}
+			ctx := context{url_path == "/", !noupload, entries}
 			if err := tmpl.Execute(w, ctx); err != nil {
 				log.Println("ERROR: Executing template")
 				http.Error(w, err.Error(), 500)
@@ -138,7 +137,28 @@ func index(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
+		flag.PrintDefaults()
+		fmt.Fprintln(os.Stderr, "\nEnvironment variables (get overridden by command line arguments):")
+		fmt.Fprintln(os.Stderr, "  GOUP_UPLOAD=false: disable uploads")
+		fmt.Fprintln(os.Stderr, "  GOUP_DIR=<path>: see -dir")
+	}
+	if os.Getenv("GOUP_UPLOAD") == "false" {
+		noupload = true
+	}
+	if d := os.Getenv("GOUP_DIR"); d != "" {
+		dir = d
+	}
+
+	verbose := flag.Bool("v", true, "verbose output (no output at all by default)")
+	address := flag.String("addr", "0.0.0.0:4000", "listen on this address")
+	flag.BoolVar(&noupload, "noupload", noupload, "enable or disable uploads")
+	flag.StringVar(&dir, "dir", dir, "directory for storing and serving files")
 	flag.Parse()
+	flag.VisitAll(func(f *flag.Flag) {
+		log.Printf("SETTINGS: %s = %s", f.Name, f.Value)
+	})
 
 	log.SetOutput(ioutil.Discard)
 	if *verbose {
