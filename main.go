@@ -32,6 +32,7 @@ func (s sortable) Less(i, j int) bool {
 	default:
 		return xnor((*s.Infos)[i].Name() > (*s.Infos)[j].Name(), s.Reverse)
 	}
+	return xnor((*s.Infos)[i].Name() > (*s.Infos)[j].Name(), s.Reverse)
 }
 func (s sortable) Swap(i, j int) { (*s.Infos)[i], (*s.Infos)[j] = (*s.Infos)[j], (*s.Infos)[i] }
 
@@ -147,5 +148,4 @@ func main() {
 	http.HandleFunc("/", index)
 
 	log.Fatal(http.ListenAndServe(*address, nil))
-	return
 }
