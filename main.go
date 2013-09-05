@@ -65,6 +65,21 @@ func index(w http.ResponseWriter, r *http.Request) {
 		if noupload {
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}
+		if h := r.Header.Get("Content-Type"); !strings.HasPrefix(h, "multipart/form-data") {
+			folder := path.Clean(r.PostFormValue("folder"))
+			if folder != "" && folder != "/" {
+				switch err := os.Mkdir(path.Join(local_path, folder), 0750).(type) {
+				case *os.PathError:
+					http.Error(w, err.Op+" "+path.Join(url_path, folder)+": "+err.Err.Error(), 500)
+					return
+				case error:
+					http.Error(w, err.Error(), 500)
+					return
+				}
+			}
+			http.Redirect(w, r, path.Join(url_path, folder), 302)
+			return
+		}
 		body, err := r.MultipartReader()
 		if err != nil {
 			http.Error(w, err.Error(), 500)

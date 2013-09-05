@@ -36,6 +36,10 @@ td.name {
 		<input type='file' name='file'>
 		<input type='submit'>
 	</form>
+	<form action='.' method='post'>
+		<input type='text' name='folder' placeholder='folder'>
+		<input type='submit'>
+	</form>
 </div>
 <hr>
 {{ end }}
