@@ -69,14 +69,15 @@ func index(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if entry_info.IsDir() {
-			reverse := false
-			switch r.URL.Query().Get("by") {
+			sortKey := r.URL.Query().Get("key")
+			sortOrder := asc
+			switch r.URL.Query().Get("order") {
 			case "asc":
-				reverse = false
+				sortOrder = asc
 			case "desc":
-				reverse = true
+				sortOrder = desc
 			}
-			entries, err := readDir(local_path, r.URL.Query().Get("sort"), reverse)
+			entries, err := readDir(local_path, sortKey, sortOrder)
 			if err != nil {
 				log.Printf("ERROR: ReadDir('%s')", local_path)
 				http.Error(w, err.Error(), 500)

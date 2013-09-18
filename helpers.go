@@ -5,31 +5,36 @@ import (
 	"sort"
 )
 
+var (
+	asc          = false
+	desc         = true
+)
+
 type sortable struct {
-	Infos   *[]os.FileInfo
-	SortBy  string
-	Reverse bool
+	Infos *[]os.FileInfo
+	Key   string
+	Order bool
 }
 
 func xnor(a, b bool) bool { return !((a || b) && (!a || !b)) }
 
 func (s sortable) Len() int { return len(*s.Infos) }
 func (s sortable) Less(i, j int) bool {
-	switch s.SortBy {
+	switch s.Key {
 	case "mode":
-		return xnor((*s.Infos)[i].Mode() > (*s.Infos)[j].Mode(), s.Reverse)
+		return xnor((*s.Infos)[i].Mode() > (*s.Infos)[j].Mode(), s.Order)
 	case "time":
-		return xnor((*s.Infos)[i].ModTime().After((*s.Infos)[j].ModTime()), s.Reverse)
+		return xnor((*s.Infos)[i].ModTime().After((*s.Infos)[j].ModTime()), s.Order)
 	case "size":
-		return xnor((*s.Infos)[i].Size() > (*s.Infos)[j].Size(), s.Reverse)
+		return xnor((*s.Infos)[i].Size() > (*s.Infos)[j].Size(), s.Order)
 	default:
-		return xnor((*s.Infos)[i].Name() > (*s.Infos)[j].Name(), s.Reverse)
+		return xnor((*s.Infos)[i].Name() > (*s.Infos)[j].Name(), s.Order)
 	}
-	return xnor((*s.Infos)[i].Name() > (*s.Infos)[j].Name(), s.Reverse)
+	return xnor((*s.Infos)[i].Name() > (*s.Infos)[j].Name(), s.Order)
 }
 func (s sortable) Swap(i, j int) { (*s.Infos)[i], (*s.Infos)[j] = (*s.Infos)[j], (*s.Infos)[i] }
 
-func readDir(dirname string, sortby string, reverse bool) ([]os.FileInfo, error) {
+func readDir(dirname string, sortby string, order bool) ([]os.FileInfo, error) {
 	f, err := os.Open(dirname)
 	if err != nil {
 		return nil, err
@@ -39,6 +44,6 @@ func readDir(dirname string, sortby string, reverse bool) ([]os.FileInfo, error)
 	if err != nil {
 		return nil, err
 	}
-	sort.Sort(sortable{&list, sortby, reverse})
+	sort.Sort(sortable{&list, sortby, order})
 	return list, nil
 }
