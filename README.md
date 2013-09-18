@@ -1,6 +1,9 @@
 Goup
 ====
 
+Goup is a small one-binary file server written in Go which also allows to upload
+files. You can run it standalone or deploy it as FastCGI application.
+
 `go get github.com/dAnjou/goup`
 
 ## Binaries (and demo)
