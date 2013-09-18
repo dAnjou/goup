@@ -10,6 +10,7 @@ type context struct {
 	IsRoot     bool
 	Upload     bool
 	DirEntries []os.FileInfo
+	SortOrder  map[string]string
 }
 
 var (
@@ -45,10 +46,10 @@ td.name {
 {{ end }}
 <table>
 	<tr>
-		<th>mode</th>
-		<th>last modified</th>
-		<th>size</th>
-		<th>name</th>
+		<th><a href=".?key=mode&order={{ .SortOrder.mode }}">mode</a></th>
+		<th><a href=".?key=time&order={{ .SortOrder.time }}">last modified</a></th>
+		<th><a href=".?key=size&order={{ .SortOrder.size }}">size</a></th>
+		<th><a href=".?key=name&order={{ .SortOrder.name }}">name</a></th>
 	</tr>
 	{{ if not .IsRoot }}
 	<tr>

@@ -74,8 +74,10 @@ func index(w http.ResponseWriter, r *http.Request) {
 			switch r.URL.Query().Get("order") {
 			case "asc":
 				sortOrder = asc
+				sortOrderMap[sortKey] = "desc"
 			case "desc":
 				sortOrder = desc
+				sortOrderMap[sortKey] = "asc"
 			}
 			entries, err := readDir(local_path, sortKey, sortOrder)
 			if err != nil {
@@ -83,7 +85,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 				http.Error(w, err.Error(), 500)
 				return
 			}
-			ctx := context{url_path == "/", !noupload, entries}
+			ctx := context{url_path == "/", !noupload, entries, sortOrderMap}
 			if err := tmpl.Execute(w, ctx); err != nil {
 				log.Println("ERROR: Executing template")
 				http.Error(w, err.Error(), 500)

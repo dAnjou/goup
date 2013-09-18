@@ -8,6 +8,12 @@ import (
 var (
 	asc          = false
 	desc         = true
+	sortOrderMap = map[string]string{
+		"mode": "asc",
+		"time": "asc",
+		"size": "asc",
+		"name": "asc",
+	}
 )
 
 type sortable struct {
