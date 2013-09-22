@@ -18,6 +18,7 @@ http://dump.danjou.de/goup/
 	  -mode="http": run either standalone (http) or as FCGI application (fcgi)
 	  -noupload=false: enable or disable uploads
 	  -v=false: verbose output (no output at all by default)
+	  -version=false: show version and exit
 
 	Environment variables (get overridden by command line arguments):
 	  GOUP_UPLOAD=false: disable uploads
