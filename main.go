@@ -13,6 +13,7 @@ import (
 var (
 	noupload bool   = false
 	dir      string = "."
+	VERSION  string = ""
 )
 
 func main() {
@@ -39,7 +40,13 @@ func main() {
 	flag.BoolVar(&noupload, "noupload", noupload, "enable or disable uploads")
 	verbose := flag.Bool("v", false, "verbose output (no output at all by default)")
 	address := flag.String("addr", "0.0.0.0:4000", "listen on this address")
+	version := flag.Bool("version", false, "show version and exit")
 	flag.Parse()
+
+	if *version {
+		fmt.Println(VERSION)
+		return
+	}
 
 	log.SetOutput(ioutil.Discard)
 	if *verbose {
