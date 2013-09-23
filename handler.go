@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func index(w http.ResponseWriter, r *http.Request) {
+func handler(w http.ResponseWriter, r *http.Request) {
 	url_path := path.Clean(r.URL.Path)
 	local_path := path.Join(dir, url_path)
 	switch r.Method {

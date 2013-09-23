@@ -13,6 +13,7 @@ import (
 var (
 	noupload bool   = false
 	dir      string = "."
+	mode     string = "http"
 	VERSION  string = ""
 )
 
@@ -31,15 +32,14 @@ func main() {
 	if d := os.Getenv("GOUP_DIR"); d != "" {
 		dir = d
 	}
-	mode := "http"
 	if m := os.Getenv("GOUP_MODE"); m != "" {
 		mode = m
 	}
+	address := flag.String("addr", "0.0.0.0:4000", "listen on this address")
+	flag.BoolVar(&noupload, "noupload", noupload, "enable or disable uploads")
 	flag.StringVar(&dir, "dir", dir, "directory for storing and serving files")
 	flag.StringVar(&mode, "mode", mode, "run either standalone (http) or as FCGI application (fcgi)")
-	flag.BoolVar(&noupload, "noupload", noupload, "enable or disable uploads")
 	verbose := flag.Bool("v", false, "verbose output (no output at all by default)")
-	address := flag.String("addr", "0.0.0.0:4000", "listen on this address")
 	version := flag.Bool("version", false, "show version and exit")
 	flag.Parse()
 
@@ -56,7 +56,7 @@ func main() {
 		})
 	}
 
-	http.HandleFunc("/", index)
+	http.HandleFunc("/", handler)
 
 	switch mode {
 	case "http":
