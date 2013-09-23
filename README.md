@@ -15,6 +15,7 @@ http://dump.danjou.de/goup/
 	Usage of goup:
 	  -addr="0.0.0.0:4000": listen on this address
 	  -dir=".": directory for storing and serving files
+	  -index="": serve this file if it exists in the current directory instead of a listing
 	  -mode="http": run either standalone (http) or as FCGI application (fcgi)
 	  -noupload=false: enable or disable uploads
 	  -v=false: verbose output (no output at all by default)
@@ -24,3 +25,4 @@ http://dump.danjou.de/goup/
 	  GOUP_UPLOAD=false: disable uploads
 	  GOUP_DIR=<path>: see -dir
 	  GOUP_MODE=(http|fcgi): see -mode
+	  GOUP_INDEX=<filename>: see -index
