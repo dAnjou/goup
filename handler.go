@@ -69,6 +69,16 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if entry_info.IsDir() {
+			if index != "" {
+				index := path.Join(local_path, index)
+				if fi, err := os.Stat(index); err == nil {
+					if f, err := os.Open(index); err == nil {
+						defer f.Close()
+						http.ServeContent(w, r, fi.Name(), fi.ModTime(), f)
+						return
+					}
+				}
+			}
 			sortKey := r.URL.Query().Get("key")
 			sortOrder := asc
 			switch r.URL.Query().Get("order") {

@@ -14,6 +14,7 @@ var (
 	noupload bool   = false
 	dir      string = "."
 	mode     string = "http"
+	index    string = ""
 	VERSION  string = ""
 )
 
@@ -25,6 +26,7 @@ func main() {
 		fmt.Fprintln(os.Stderr, "  GOUP_UPLOAD=false: disable uploads")
 		fmt.Fprintln(os.Stderr, "  GOUP_DIR=<path>: see -dir")
 		fmt.Fprintln(os.Stderr, "  GOUP_MODE=(http|fcgi): see -mode")
+		fmt.Fprintln(os.Stderr, "  GOUP_INDEX=<filename>: see -index")
 	}
 	if os.Getenv("GOUP_UPLOAD") == "false" {
 		noupload = true
@@ -35,10 +37,14 @@ func main() {
 	if m := os.Getenv("GOUP_MODE"); m != "" {
 		mode = m
 	}
+	if i := os.Getenv("GOUP_INDEX"); i != "" {
+		index = i
+	}
 	address := flag.String("addr", "0.0.0.0:4000", "listen on this address")
 	flag.BoolVar(&noupload, "noupload", noupload, "enable or disable uploads")
 	flag.StringVar(&dir, "dir", dir, "directory for storing and serving files")
 	flag.StringVar(&mode, "mode", mode, "run either standalone (http) or as FCGI application (fcgi)")
+	flag.StringVar(&index, "index", index, "serve this file if it exists in the current directory instead of a listing")
 	verbose := flag.Bool("v", false, "verbose output (no output at all by default)")
 	version := flag.Bool("version", false, "show version and exit")
 	flag.Parse()
