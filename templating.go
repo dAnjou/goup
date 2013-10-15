@@ -18,18 +18,13 @@ var (
 <!DOCTYPE html>
 <title>goup</title>
 <meta charset='utf-8'>
+<meta name="viewport" content="width=device-width">
 <style type="text/css">
-table {
-	font-family: monospace;
-}
-td {
-	text-align: right;
-	padding: 0 15px;
-}
-td.name {
-	text-align: left;
-}
-.grosskursiv { font-style:italic; font-size:200%; }
+table { font-family: monospace; }
+td { text-align: right; padding: 0 15px; }
+td.name { text-align: left; }
+td.delete { visibility: hidden; }
+tr:hover td.delete { visibility: visible; }
 </style>
 {{ if .Upload }}
 <div>
@@ -60,7 +55,7 @@ td.name {
 	{{ range $e := .DirEntries }}
 	<tr>
 		<td>{{ $e.Mode }}</td>
-		<td>{{ $e.ModTime.Format "2006-01-02T15:04:05" }}</td>
+		<td>{{ $e.ModTime.Format "2006-01-02 15:04:05" }}</td>
 		{{ if $e.IsDir }}
 			<td></td>
 			<td class="name"><a href="{{ $e.Name }}/">{{ $e.Name }}/</a></td>
