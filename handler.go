@@ -16,6 +16,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	case "POST":
 		if noupload {
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+			return
 		}
 		if h := r.Header.Get("Content-Type"); !strings.HasPrefix(h, "multipart/form-data") {
 			folder := path.Clean(r.PostFormValue("folder"))
