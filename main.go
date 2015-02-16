@@ -25,23 +25,6 @@ func main() {
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
 		flag.PrintDefaults()
-		fmt.Fprintln(os.Stderr, "\nEnvironment variables (get overridden by command line arguments):")
-		fmt.Fprintln(os.Stderr, "  GOUP_UPLOAD=false: disable uploads")
-		fmt.Fprintln(os.Stderr, "  GOUP_DIR=<path>: see -dir")
-		fmt.Fprintln(os.Stderr, "  GOUP_MODE=(http|fcgi): see -mode")
-		fmt.Fprintln(os.Stderr, "  GOUP_INDEX=<filename>: see -index")
-	}
-	if os.Getenv("GOUP_UPLOAD") == "false" {
-		noupload = true
-	}
-	if d := os.Getenv("GOUP_DIR"); d != "" {
-		dir = d
-	}
-	if m := os.Getenv("GOUP_MODE"); m != "" {
-		mode = m
-	}
-	if i := os.Getenv("GOUP_INDEX"); i != "" {
-		index = i
 	}
 	address := flag.String("addr", "0.0.0.0:4000", "listen on this address")
 	flag.BoolVar(&noupload, "noupload", noupload, "enable or disable uploads")

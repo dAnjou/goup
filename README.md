@@ -23,9 +23,3 @@ http://dump.danjou.de/goup/
 	  -user="": user for HTTP Basic authentication (-auth needs to be set)
 	  -v=false: verbose output (no output at all by default)
 	  -version=false: show version and exit
-
-	Environment variables (get overridden by command line arguments):
-	  GOUP_UPLOAD=false: disable uploads
-	  GOUP_DIR=<path>: see -dir
-	  GOUP_MODE=(http|fcgi): see -mode
-	  GOUP_INDEX=<filename>: see -index
