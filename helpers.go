@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"sort"
+	"strings"
 )
 
 var (
@@ -52,4 +53,14 @@ func readDir(dirname string, sortby string, order bool) ([]os.FileInfo, error) {
 	}
 	sort.Sort(sortable{&list, sortby, order})
 	return list, nil
+}
+
+func isProtected(level string, auth string) bool {
+	levels := strings.Split(auth, ",")
+    for _, x := range levels {
+        if x == level {
+            return true
+        }
+    }
+    return false
 }

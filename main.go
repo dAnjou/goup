@@ -12,6 +12,9 @@ import (
 
 var (
 	noupload bool   = false
+	user     string = ""
+	password string = ""
+	auth     string = ""
 	dir      string = "."
 	mode     string = "http"
 	index    string = ""
@@ -42,6 +45,9 @@ func main() {
 	}
 	address := flag.String("addr", "0.0.0.0:4000", "listen on this address")
 	flag.BoolVar(&noupload, "noupload", noupload, "enable or disable uploads")
+	flag.StringVar(&user, "user", user, "user for HTTP Basic authentication (-auth needs to be set)")
+	flag.StringVar(&password, "password", password, "password for HTTP Basic authentication (-auth needs to be set)")
+	flag.StringVar(&auth, "auth", auth, "comma-separated list of what will be protected by HTTP Basic authentication (index,download,upload)")
 	flag.StringVar(&dir, "dir", dir, "directory for storing and serving files")
 	flag.StringVar(&mode, "mode", mode, "run either standalone (http) or as FCGI application (fcgi)")
 	flag.StringVar(&index, "index", index, "serve this file if it exists in the current directory instead of a listing")

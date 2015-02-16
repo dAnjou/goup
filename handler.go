@@ -18,6 +18,14 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 			return
 		}
+		if isProtected("upload", auth) {
+			u, p, ok := r.BasicAuth()
+			if !ok || (user != u && password != p) {
+				w.Header().Set("WWW-Authenticate", "Basic")
+				http.Error(w, "Unauthorized", http.StatusUnauthorized)
+				return
+			}
+		}
 		if h := r.Header.Get("Content-Type"); !strings.HasPrefix(h, "multipart/form-data") {
 			folder := path.Clean(r.PostFormValue("folder"))
 			if folder != "" && folder != "/" {
@@ -59,6 +67,14 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		}
 		http.Redirect(w, r, url_path, 302)
 	case "GET":
+		if isProtected("index", auth) {
+			u, p, ok := r.BasicAuth()
+			if !ok || (user != u && password != p) {
+				w.Header().Set("WWW-Authenticate", "Basic")
+				http.Error(w, "Unauthorized", http.StatusUnauthorized)
+				return
+			}
+		}
 		entry_info, err := os.Stat(local_path)
 		if err != nil {
 			log.Printf("ERROR: os.Stat('%s')", local_path)
@@ -101,6 +117,14 @@ func handler(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 		} else {
+			if isProtected("download", auth) {
+				u, p, ok := r.BasicAuth()
+				if !ok || (user != u && password != p) {
+					w.Header().Set("WWW-Authenticate", "Basic")
+					http.Error(w, "Unauthorized", http.StatusUnauthorized)
+					return
+				}
+			}
 			f, err := os.Open(local_path)
 			if err != nil {
 				log.Printf("ERROR: os.Open('%s')", local_path)
