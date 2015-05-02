@@ -20,7 +20,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		}
 		if isProtected("upload", auth) {
 			u, p, ok := r.BasicAuth()
-			if !ok || (user != u && password != p) {
+			if !ok || user != u || password != p {
 				w.Header().Set("WWW-Authenticate", "Basic")
 				http.Error(w, "Unauthorized", http.StatusUnauthorized)
 				return
@@ -69,7 +69,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	case "GET":
 		if isProtected("index", auth) {
 			u, p, ok := r.BasicAuth()
-			if !ok || (user != u && password != p) {
+			if !ok || user != u || password != p {
 				w.Header().Set("WWW-Authenticate", "Basic")
 				http.Error(w, "Unauthorized", http.StatusUnauthorized)
 				return
@@ -119,7 +119,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		} else {
 			if isProtected("download", auth) {
 				u, p, ok := r.BasicAuth()
-				if !ok || (user != u && password != p) {
+				if !ok || user != u || password != p {
 					w.Header().Set("WWW-Authenticate", "Basic")
 					http.Error(w, "Unauthorized", http.StatusUnauthorized)
 					return
