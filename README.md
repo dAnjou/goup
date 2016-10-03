@@ -4,11 +4,13 @@ Goup
 Goup is a small one-binary file server written in Go which also allows to upload
 files. You can run it standalone or deploy it as FastCGI application.
 
-`go get github.com/dAnjou/goup`
+## Installation for Go users
 
-## Binaries (and demo)
+`go get -u github.com/dAnjou/goup`
 
-http://dump.danjou.de/goup/
+## Binary and packages
+
+https://github.com/dAnjou/goup/releases
 
 ## Usage
 
