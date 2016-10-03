@@ -1,0 +1,11 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"path": "github.com/dustin/go-humanize",
+			"revision": "bd88f87ad3a420f7bcf05e90566fd1ceb351fa7f"
+		}
+	],
+	"rootPath": "github.com/dAnjou/goup"
+}
