@@ -1,6 +1,6 @@
 FROM golang:1.7
 
-ENV goup_version 0.2.1
+ENV goup_version 0.2.2
 
 # install fpm
 RUN apt-get update \
@@ -38,5 +38,4 @@ RUN fpm -s dir -t rpm --name goup --version $goup_version ./goup=/usr/local/bin/
 
 EXPOSE 4000
 
-WORKDIR /go/src/goup
-CMD ["go-wrapper", "run", "-dir", "/data"]
+CMD ["./goup", "-dir", "/data"]
