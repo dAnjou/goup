@@ -1,0 +1,15 @@
+image: docker:stable
+
+variables:
+  DOCKER_DRIVER: overlay2
+
+services:
+- docker:dind
+
+build:
+  script:
+  - apk add --update make
+  - make builds
+  artifacts:
+    paths:
+    - builds/
