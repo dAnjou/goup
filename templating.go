@@ -14,13 +14,13 @@ type context struct {
 }
 
 var (
-	asset__index_html, err = Asset("assets/index.html")
-	default_template = string(asset__index_html)
-	funcMap = template.FuncMap{
+	assetIndexHTML, err = Asset("assets/index.html")
+	defaultTemplate     = string(assetIndexHTML)
+	funcMap             = template.FuncMap{
 		"size": func(b int64) string {
 			return humanize.Bytes(uint64(b))
 		},
 		//"time": humanize.Time,
 	}
-	tmpl = template.Must(template.New("index").Funcs(funcMap).Parse(default_template))
+	tmpl = template.Must(template.New("index").Funcs(funcMap).Parse(defaultTemplate))
 )

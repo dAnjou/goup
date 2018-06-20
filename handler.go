@@ -10,8 +10,8 @@ import (
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	url_path := path.Clean(r.URL.Path)
-	local_path := path.Join(dir, url_path)
+	urlPath := path.Clean(r.URL.Path)
+	localPath := path.Join(dir, urlPath)
 	switch r.Method {
 	case "POST":
 		if noupload {
@@ -29,9 +29,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		if h := r.Header.Get("Content-Type"); !strings.HasPrefix(h, "multipart/form-data") {
 			folder := path.Clean(r.PostFormValue("folder"))
 			if folder != "" && folder != "/" {
-				switch err := os.Mkdir(path.Join(local_path, folder), 0750).(type) {
+				switch err := os.Mkdir(path.Join(localPath, folder), 0750).(type) {
 				case *os.PathError:
-					http.Error(w, err.Op+" "+path.Join(url_path, folder)+": "+
+					http.Error(w, err.Op+" "+path.Join(urlPath, folder)+": "+
 						err.Err.Error(), 500)
 					return
 				case error:
@@ -39,7 +39,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 					return
 				}
 			}
-			http.Redirect(w, r, path.Join(url_path, folder), 302)
+			http.Redirect(w, r, path.Join(urlPath, folder), 302)
 			return
 		}
 		body, err := r.MultipartReader()
@@ -48,24 +48,24 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		for part, err := body.NextPart(); err == nil; part, err = body.NextPart() {
-			form_name := part.FormName()
-			if form_name != "file" {
-				log.Printf("Skipping '%s'", form_name)
+			formName := part.FormName()
+			if formName != "file" {
+				log.Printf("Skipping '%s'", formName)
 				continue
 			}
-			log.Printf("Handling '%s'", form_name)
-			dest_file, err := os.Create(path.Join(local_path, part.FileName()))
+			log.Printf("Handling '%s'", formName)
+			destFile, err := os.Create(path.Join(localPath, part.FileName()))
 			if err != nil {
 				http.Error(w, err.Error(), 500)
 				return
 			}
-			defer dest_file.Close()
-			if _, err := io.Copy(dest_file, part); err != nil {
+			defer destFile.Close()
+			if _, err := io.Copy(destFile, part); err != nil {
 				http.Error(w, err.Error(), 500)
 				return
 			}
 		}
-		http.Redirect(w, r, url_path, 302)
+		http.Redirect(w, r, urlPath, 302)
 	case "GET":
 		if isProtected("index", auth) {
 			u, p, ok := r.BasicAuth()
@@ -75,25 +75,25 @@ func handler(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 		}
-		entry_info, err := os.Stat(local_path)
+		entryInfo, err := os.Stat(localPath)
 		if err != nil {
-			log.Printf("ERROR: os.Stat('%s')", local_path)
+			log.Printf("ERROR: os.Stat('%s')", localPath)
 			http.Error(w, err.Error(), 500)
 			return
 		}
-		if entry_info.IsDir() && !strings.HasSuffix(r.URL.Path, "/") {
+		if entryInfo.IsDir() && !strings.HasSuffix(r.URL.Path, "/") {
 			http.Redirect(w, r, r.URL.Path+"/", 302)
 			return
 		}
-		if entry_info.IsDir() && index != "" {
-			if fi, err := os.Stat(path.Join(local_path, index)); err == nil {
+		if entryInfo.IsDir() && index != "" {
+			if fi, err := os.Stat(path.Join(localPath, index)); err == nil {
 				if !fi.IsDir() {
-					http.Redirect(w, r, path.Join(url_path, index), 302)
+					http.Redirect(w, r, path.Join(urlPath, index), 302)
 					return
 				}
 			}
 		}
-		if entry_info.IsDir() {
+		if entryInfo.IsDir() {
 			sortKey := r.URL.Query().Get("key")
 			sortOrder := asc
 			switch r.URL.Query().Get("order") {
@@ -104,13 +104,13 @@ func handler(w http.ResponseWriter, r *http.Request) {
 				sortOrder = desc
 				sortOrderMap[sortKey] = "asc"
 			}
-			entries, err := readDir(local_path, sortKey, sortOrder)
+			entries, err := readDir(localPath, sortKey, sortOrder)
 			if err != nil {
-				log.Printf("ERROR: ReadDir('%s')", local_path)
+				log.Printf("ERROR: ReadDir('%s')", localPath)
 				http.Error(w, err.Error(), 500)
 				return
 			}
-			ctx := context{url_path == "/", !noupload, entries, sortOrderMap}
+			ctx := context{urlPath == "/", !noupload, entries, sortOrderMap}
 			if err := tmpl.Execute(w, ctx); err != nil {
 				log.Println("ERROR: Executing template")
 				http.Error(w, err.Error(), 500)
@@ -125,15 +125,15 @@ func handler(w http.ResponseWriter, r *http.Request) {
 					return
 				}
 			}
-			f, err := os.Open(local_path)
+			f, err := os.Open(localPath)
 			if err != nil {
-				log.Printf("ERROR: os.Open('%s')", local_path)
+				log.Printf("ERROR: os.Open('%s')", localPath)
 				http.Error(w, err.Error(), 500)
 				return
 			}
 			defer f.Close()
-			log.Printf("Serving '%s'", local_path)
-			http.ServeContent(w, r, entry_info.Name(), entry_info.ModTime(), f)
+			log.Printf("Serving '%s'", localPath)
+			http.ServeContent(w, r, entryInfo.Name(), entryInfo.ModTime(), f)
 		}
 	default:
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)

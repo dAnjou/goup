@@ -11,14 +11,15 @@ import (
 )
 
 var (
-	noupload bool   = false
-	user     string = ""
-	password string = ""
-	auth     string = ""
-	dir      string = "."
-	mode     string = "http"
-	index    string = ""
-	VERSION  string = ""
+	noupload = false
+	user     string
+	password string
+	auth     string
+	dir      = "."
+	mode     = "http"
+	index    string
+	// VERSION application version
+	VERSION string
 )
 
 func main() {
