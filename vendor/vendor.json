@@ -3,9 +3,10 @@
 	"ignore": "test",
 	"package": [
 		{
+			"checksumSHA1": "RqDlQ3BLWYnTsXF/cXNMx5rvG5Q=",
 			"path": "github.com/dustin/go-humanize",
 			"revision": "bd88f87ad3a420f7bcf05e90566fd1ceb351fa7f"
 		}
 	],
-	"rootPath": "github.com/dAnjou/goup"
+	"rootPath": "gitlab.com/dAnjou/goup"
 }

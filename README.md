@@ -6,11 +6,7 @@ files. You can run it standalone or deploy it as FastCGI application.
 
 ## Installation for Go users
 
-`go get -u github.com/dAnjou/goup`
-
-## Binary and packages
-
-https://github.com/dAnjou/goup/releases
+`go get -u gitlab.com/dAnjou/goup`
 
 ## Usage
 
