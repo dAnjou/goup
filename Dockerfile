@@ -1,6 +1,6 @@
 FROM golang:1-alpine
 
-ENV goup_version 0.2.2
+ENV version 0.2.2
 
 # install govendor and fpm
 RUN apk add --no-cache --quiet \
@@ -20,23 +20,25 @@ RUN apk add --no-cache --quiet \
 RUN mkdir /data
 VOLUME /data
 
-# create directory for Goup binary and packages
-RUN mkdir /builds
-
 # build Goup
-RUN mkdir -p /go/src/goup
+ENV tarball_name goup_${version}_64-bit
+RUN mkdir /${tarball_name}
+RUN mkdir /go/src/goup
 WORKDIR /go/src/goup
 COPY . /go/src/goup
 RUN govendor sync
 ENV GOOS linux
 ENV GOARCH amd64
 ENV CGO_ENABLED 0
-RUN go build -o /builds/goup -ldflags "-X main.VERSION=$goup_version" -v .
+RUN go build -o /${tarball_name}/goup -ldflags "-X main.VERSION=${version}" -v .
 
-# create DEB and RPM packages
+# create packages
+RUN mkdir /builds
 WORKDIR /builds
-RUN fpm -s dir -t deb --name goup --version $goup_version ./goup=/usr/local/bin/goup
-RUN fpm -s dir -t rpm --name goup --version $goup_version ./goup=/usr/local/bin/goup
+RUN cp /${tarball_name}/goup .
+RUN tar -czf ${tarball_name}.tar.gz /${tarball_name}/goup
+RUN fpm -s dir -t deb --name goup --version ${version} /${tarball_name}/goup=/usr/local/bin/goup
+RUN fpm -s dir -t rpm --name goup --version ${version} /${tarball_name}/goup=/usr/local/bin/goup
 
 EXPOSE 4000
 
