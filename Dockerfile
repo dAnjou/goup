@@ -1,21 +1,20 @@
-FROM golang:1.7
+FROM golang:1-alpine
 
 ENV goup_version 0.2.2
 
-# install fpm
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        ruby \
-        ruby-dev \
-        gcc \
-        make \
-        rpm \
-    && rm -rf /var/lib/apt/lists/* \
-    && gem install fpm
-
-# install govendor
-RUN wget --no-verbose -O /usr/local/bin/govendor https://github.com/kardianos/govendor/releases/download/v1.0.8/govendor_linux_amd64 \
-    && chmod +x /usr/local/bin/govendor
+# install govendor and fpm
+RUN apk add --no-cache --quiet \
+    ruby \
+    ruby-dev \
+    gcc \
+    libffi-dev \
+    make \
+    libc-dev \
+    rpm \
+    govendor \
+    git \
+    tar \
+    && gem install --quiet --no-ri --no-rdoc fpm
 
 # create volume for files and directories to be served by Goup
 RUN mkdir /data
@@ -29,6 +28,9 @@ RUN mkdir -p /go/src/goup
 WORKDIR /go/src/goup
 COPY . /go/src/goup
 RUN govendor sync
+ENV GOOS linux
+ENV GOARCH amd64
+ENV CGO_ENABLED 0
 RUN go build -o /builds/goup -ldflags "-X main.VERSION=$goup_version" -v .
 
 # create DEB and RPM packages
