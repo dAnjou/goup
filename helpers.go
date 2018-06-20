@@ -37,7 +37,6 @@ func (s sortable) Less(i, j int) bool {
 	default:
 		return xnor((*s.Infos)[i].Name() > (*s.Infos)[j].Name(), s.Order)
 	}
-	return xnor((*s.Infos)[i].Name() > (*s.Infos)[j].Name(), s.Order)
 }
 func (s sortable) Swap(i, j int) { (*s.Infos)[i], (*s.Infos)[j] = (*s.Infos)[j], (*s.Infos)[i] }
 
