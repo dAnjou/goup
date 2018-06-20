@@ -6,10 +6,10 @@ variables:
 services:
 - docker:dind
 
-build:
+pages:
   script:
-  - apk add --update make
-  - make builds
+  - apk add --update make ruby
+  - make website
   artifacts:
     paths:
-    - builds/
+    - public
