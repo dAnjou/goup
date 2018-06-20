@@ -36,10 +36,11 @@ RUN go build -o /${tarball_name}/goup -ldflags "-X main.VERSION=${version}" -v .
 RUN mkdir /builds
 WORKDIR /builds
 RUN cp /${tarball_name}/goup .
+ENV PATH /builds:${PATH}
 RUN tar -czf ${tarball_name}.tar.gz /${tarball_name}/goup
 RUN fpm -s dir -t deb --name goup --version ${version} /${tarball_name}/goup=/usr/local/bin/goup
 RUN fpm -s dir -t rpm --name goup --version ${version} /${tarball_name}/goup=/usr/local/bin/goup
 
 EXPOSE 4000
 
-CMD ["./goup", "-dir", "/data"]
+CMD ["goup", "-dir", "/data"]
